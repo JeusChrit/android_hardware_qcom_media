@@ -3,7 +3,7 @@ include $(CLEAR_VARS)
 include $(LIBION_HEADER_PATH_WRAPPER)
 
 # ---------------------------------------------------------------------------------
-#                      Common definitons
+# 				Common definitons
 # ---------------------------------------------------------------------------------
 
 libmm-venc-def := -g -O3 -Dlrintf=_ffix_r
@@ -26,7 +26,7 @@ TARGETS_THAT_USE_FLAG_MSM8226 := msm8226 msm8916 msm8909
 TARGETS_THAT_NEED_SW_VENC_MPEG4 := msm8909 msm8937
 TARGETS_THAT_NEED_SW_VENC_HEVC := msm8992
 TARGETS_THAT_SUPPORT_UBWC := msm8996 msm8998 apq8098_latv
-TARGETS_THAT_SUPPORT_VQZIP := msm8996 msm8998 apq8098_latv
+TARGETS_THAT_SUPPORT_VQZIP := msm8996 apq8098_latv
 TARGETS_THAT_SUPPORT_PQ := msm8996 apq8098_latv
 TARGETS_THAT_USE_NV21 := sdm660 msm8953
 TARGETS_THAT_SUPPORT_MAX_H264_LEVEL_4 := msm8937
@@ -98,7 +98,7 @@ endif
 libmm-venc-def += -DUSE_CAMERA_METABUFFER_UTILS
 
 # Hypervisor
-ifneq (,$(filter $(MACHINE), "8x96autogvmquin" "8x96autogvmred"))
+ifeq ($(ENABLE_HYP),true)
 libmm-venc-def += -D_HYPERVISOR_
 endif
 
@@ -140,19 +140,18 @@ LOCAL_VENDOR_MODULE             := true
 LOCAL_CFLAGS                    := $(libmm-venc-def)
 
 LOCAL_HEADER_LIBRARIES := \
-        display_headers \
         media_plugin_headers \
         libnativebase_headers \
         libcutils_headers \
         libutils_headers \
         libhardware_headers \
-        display_headers \
+        display_headers
 
 LOCAL_C_INCLUDES                := $(libmm-venc-inc)
 LOCAL_ADDITIONAL_DEPENDENCIES   := $(libmm-venc-add-dep)
 
 LOCAL_PRELINK_MODULE      := false
-LOCAL_SHARED_LIBRARIES    := liblog libcutils libdl
+LOCAL_SHARED_LIBRARIES    := liblog libcutils libdl libion
 
 ifeq ($(BOARD_USES_ADRENO), true)
 LOCAL_SHARED_LIBRARIES    += libc2dcolorconvert
@@ -172,7 +171,6 @@ ifeq ($(call is-board-platform-in-list, $(TARGETS_THAT_NEED_SW_VENC_MPEG4)),true
 # 			Make the Shared library (libOmxSwVencMpeg4)
 # ---------------------------------------------------------------------------------
 
-ifneq ($(QCPATH),)
 include $(CLEAR_VARS)
 
 libmm-venc-inc      += $(TARGET_OUT_HEADERS)/mm-video/swvenc
@@ -184,18 +182,17 @@ LOCAL_VENDOR_MODULE             := true
 LOCAL_CFLAGS                    := $(libmm-venc-def)
 
 LOCAL_HEADER_LIBRARIES := \
-        display_headers \
         media_plugin_headers \
         libnativebase_headers \
         libutils_headers \
         libhardware_headers \
-        display_headers \
+        display_headers
 
 LOCAL_C_INCLUDES                := $(libmm-venc-inc)
 LOCAL_ADDITIONAL_DEPENDENCIES   := $(libmm-venc-add-dep)
 
 LOCAL_PRELINK_MODULE      := false
-LOCAL_SHARED_LIBRARIES    := liblog libcutils libdl
+LOCAL_SHARED_LIBRARIES    := liblog libcutils libdl libion
 LOCAL_SHARED_LIBRARIES    += libMpeg4SwEncoder
 ifeq ($(BOARD_USES_ADRENO), true)
 LOCAL_SHARED_LIBRARIES    += libc2dcolorconvert
@@ -206,7 +203,6 @@ LOCAL_SRC_FILES   := src/omx_video_base.cpp
 LOCAL_SRC_FILES   += src/omx_swvenc_mpeg4.cpp
 
 include $(BUILD_SHARED_LIBRARY)
-endif # QCPATH
 endif
 
 

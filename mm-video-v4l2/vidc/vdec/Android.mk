@@ -3,7 +3,7 @@ include $(CLEAR_VARS)
 include $(LIBION_HEADER_PATH_WRAPPER)
 
 # ---------------------------------------------------------------------------------
-#                      Common definitons
+# 				Common definitons
 # ---------------------------------------------------------------------------------
 
 libmm-vdec-def := -D__alignx\(x\)=__attribute__\(\(__aligned__\(x\)\)\)
@@ -122,7 +122,7 @@ libmm-vdec-def += -DMAX_H264_LEVEL_52
 endif
 
 # Hypervisor
-ifneq (,$(filter $(MACHINE), "8x96autogvmquin" "8x96autogvmred"))
+ifeq ($(ENABLE_HYP),true)
 libmm-vdec-def += -D_HYPERVISOR_
 endif
 # ---------------------------------------------------------------------------------
@@ -147,7 +147,7 @@ LOCAL_C_INCLUDES                += $(libmm-vdec-inc)
 LOCAL_ADDITIONAL_DEPENDENCIES   := $(libmm-vdec-add-dep)
 
 LOCAL_PRELINK_MODULE    := false
-LOCAL_SHARED_LIBRARIES  := liblog libcutils libdl libqdutils
+LOCAL_SHARED_LIBRARIES  := liblog libcutils libdl libqdutils libion
 
 LOCAL_SHARED_LIBRARIES  += libqdMetaData libhypv_intercept
 
@@ -187,7 +187,7 @@ LOCAL_C_INCLUDES              += $(libmm-vdec-inc)
 LOCAL_ADDITIONAL_DEPENDENCIES := $(libmm-vdec-add-dep)
 
 LOCAL_PRELINK_MODULE          := false
-LOCAL_SHARED_LIBRARIES        := liblog libcutils
+LOCAL_SHARED_LIBRARIES        := liblog libcutils libion
 LOCAL_SHARED_LIBRARIES        += libswvdec
 
 LOCAL_SRC_FILES               := src/omx_swvdec.cpp
